@@ -1,7 +1,194 @@
-<html>
+<!DOCTYPE html>
+<html lang="th">
 
-<body>
-    hello world
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Hub - Boripon Clinic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .tent-card {
+            width: 10.5cm;
+            min-height: 14.8cm;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+        }
+
+        .bg-main {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .qr-frame {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pulse-border {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(168, 85, 247, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(168, 85, 247, 0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen p-4 flex flex-col items-center">
+
+    <!-- ส่วนที่ 1: ป้ายตั้งโต๊ะสำหรับพิมพ์ (Printable Design) -->
+    <div class="mb-12 print:m-0">
+        <div class="tent-card shadow-2xl rounded-[3rem] flex flex-col bg-white">
+            <!-- Header -->
+            <div class="h-[30%] bg-main flex flex-col items-center justify-center text-white p-6 text-center">
+                <div class="flex gap-1 mb-2 text-yellow-300">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                <h1 class="text-3xl font-bold tracking-tight uppercase">Review & get 15% OFF</h1>
+                <p class="text-sm opacity-90 font-light mt-1">รีวิวความประทับใจ รับส่วนลดสูงสุด 15 %ทันที!</p>
+            </div>
+
+            <!-- Body -->
+            <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                <div class="mb-6">
+                    <p class="text-gray-600 font-medium">สแกนเพื่อใช้ <span class="text-purple-600 font-bold">AI
+                            ช่วยเขียนรีวิว</span></p>
+                    <p class="text-[10px] text-gray-400">เลือกรับส่วนลดได้ทั้ง Facebook และ Google Maps</p>
+                </div>
+
+                <!-- Main QR Code -->
+                <div
+                    class="qr-frame w-56 h-56 bg-white border-[8px] border-purple-600 p-2 rounded-[2.5rem] shadow-2xl pulse-border">
+                    <img id="mainQRCode"
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PENDING&color=6b21a8"
+                        alt="Scan Me" class="w-full h-full rounded-2xl">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="bg-white p-2 rounded-2xl shadow-lg border border-purple-100">
+                            <span class="text-2xl">✨</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 space-y-1">
+                    <p class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase">Scan to Start</p>
+                    <p class="text-lg font-bold text-gray-800 uppercase text-center">Boripon Clinic</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 text-center text-[10px] text-gray-400 border-t border-gray-100 italic">
+                *แสดงผลการรีวิวต่อพนักงานเพื่อรับสิทธิ์ส่วนลดสูงสุด 15%
+            </div>
+        </div>
+    </div>
+
+    <!-- ส่วนที่ 2: ระบบ AI Review Assistant -->
+    <div id="ai-section"
+        class="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-purple-100 p-8 space-y-6 mb-8">
+        <div class="text-center">
+            <div
+                class="inline-block bg-purple-100 text-purple-600 px-4 py-1 rounded-full text-xs font-bold mb-2 uppercase tracking-widest">
+                AI Assistant</div>
+            <h2 class="text-2xl font-bold text-gray-800">✨ ช่วยคุณเขียนรีวิว</h2>
+            <p class="text-sm text-gray-500">พิมพ์สิ่งที่คุณประทับใจ เราจะช่วยเรียบเรียงให้</p>
+        </div>
+
+        <div class="space-y-4">
+            <textarea id="userInput" placeholder="เช่น คุณหมอมือเบามากครับ สถานที่สะอาด พนักงานบริการดี..."
+                class="w-full h-32 p-5 border-2 border-purple-50 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 outline-none text-base transition-all resize-none"></textarea>
+
+            <button onclick="generateAILetter()" id="generateBtn"
+                class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:shadow-purple-200 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <span id="btnText">✨ เรียบเรียงรีวิวสุดพิเศษ</span>
+            </button>
+        </div>
+
+        <!-- AI Output -->
+        <div id="aiOutputContainer" class="hidden space-y-6">
+            <div
+                class="bg-gradient-to-br from-purple-50 to-white p-6 rounded-[2rem] border-2 border-purple-100 relative shadow-inner">
+                <label class="text-[10px] font-bold text-purple-400 uppercase mb-3 block tracking-widest">รีวิวที่ AI
+                    เรียบเรียงให้ ✨</label>
+                <p id="aiResult" class="text-gray-700 leading-relaxed text-base italic"></p>
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <button onclick="generateAILetter()"
+                        class="flex items-center gap-2 bg-gray-50 text-gray-600 border border-gray-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-gray-100 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>ลองอีกครั้ง</span>
+                    </button>
+                    <button onclick="copyReview()" id="copyBtn"
+                        class="flex items-center gap-2 bg-white text-purple-600 border border-purple-200 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-purple-50 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        <span id="copyBtnText">คัดลอกข้อความ</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Destination Buttons -->
+            <div class="space-y-3">
+                <p class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest">เลือกช่องทางรีวิว
+                    (รับส่วนลดสูงสุด 15%)</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="https://www.facebook.com/Boriponclinic" target="_blank"
+                        class="flex flex-col items-center gap-2 bg-[#1877F2] text-white p-4 rounded-2xl hover:opacity-90 transition shadow-lg">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                        <span class="text-[10px] font-bold">Facebook</span>
+                    </a>
+                    <a href="https://search.google.com/local/writereview?placeid=ChIJUTc5V0F9TTAR3Br_05pbmeQ"
+                        target="_blank"
+                        class="flex flex-col items-center gap-2 bg-white border-2 border-gray-100 p-4 rounded-2xl hover:bg-gray-50 transition shadow-lg">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Google_Maps_icon_%282015-2020%29.svg/250px-Google_Maps_icon_%282015-2020%29.svg.png"
+                            class="w-8 h-8 object-contain" alt="Google Maps">
+                        <span class="text-[10px] font-bold text-gray-700 uppercase">Google Maps</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="hidden flex flex-col items-center justify-center py-12">
+            <div class="relative w-16 h-16">
+                <div class="absolute inset-0 border-4 border-purple-200 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-purple-600 rounded-full border-t-transparent animate-spin">
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-purple-600 font-medium animate-pulse">Gemini AI กำลังเรียบเรียงภาษาให้คุณ...</p>
+        </div>
+    </div>
+    <!-- ส่วนที่ 3: ที่อยู่ลิงก์สำหรับคัดลอกไปทำ QR Code -->
+    <div class="max-w-md w-full bg-gray-800 text-white p-6 rounded-[2rem] shadow-xl text-center">
+        <h3 class="font-bold mb-2">🔗 ลิงก์สำหรับนำไปทำ QR Code</h3>
+        <div id="currentUrlDisplay"
+            class="bg-gray-900 p-3 rounded-xl text-xs text-indigo-400 break-all select-all border border-gray-700">
+            กำลังโหลด...
+        </div>
+        <p class="text-[10px] text-gray-400 mt-2 italic">คัดลอกลิงก์ด้านบนนี้ไปสร้าง QR Code
+            เพื่อให้ลูกค้าเข้าถึงหน้านี้ได้ทันที</p>
+    </div>
 </body>
 
 </html>
